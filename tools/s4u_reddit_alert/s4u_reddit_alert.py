@@ -73,7 +73,9 @@ class Config:
         values = {
             "reddit_client_id": os.getenv("REDDIT_CLIENT_ID", "").strip(),
             "reddit_client_secret": os.getenv("REDDIT_CLIENT_SECRET", "").strip(),
-            "reddit_user_agent": os.getenv("REDDIT_USER_AGENT", USER_AGENT_DEFAULT).strip(),
+            "reddit_user_agent": (
+                os.getenv("REDDIT_USER_AGENT", "").strip() or USER_AGENT_DEFAULT
+            ),
             "gmail_username": os.getenv("GMAIL_USERNAME", "").strip(),
             "gmail_app_password": os.getenv("GMAIL_APP_PASSWORD", "").replace(" ", ""),
             "recipient": os.getenv("ALERT_RECIPIENT", "").strip(),
@@ -81,7 +83,14 @@ class Config:
         required = ["reddit_client_id", "reddit_client_secret"]
         if require_mail:
             required.extend(["gmail_username", "gmail_app_password", "recipient"])
-        missing = [name.upper() for name in required if not values[name]]
+        environment_names = {
+            "reddit_client_id": "REDDIT_CLIENT_ID",
+            "reddit_client_secret": "REDDIT_CLIENT_SECRET",
+            "gmail_username": "GMAIL_USERNAME",
+            "gmail_app_password": "GMAIL_APP_PASSWORD",
+            "recipient": "ALERT_RECIPIENT",
+        }
+        missing = [environment_names[name] for name in required if not values[name]]
         if missing:
             raise MonitorError(
                 "Missing required environment variables: " + ", ".join(missing)
@@ -367,20 +376,23 @@ def build_message(
         "<p>Codici e link sono riportati direttamente qui sotto.</p>",
     ]
     for offer in offers:
-        code_text = offer.code or (
-            "Nessun codice richiesto" if offer.discount == 100 else "Codice non trovato"
+        if offer.code:
+            code_text = offer.code
+        elif offer.coupon_links:
+            code_text = "Da ottenere dalla pagina coupon"
+        elif offer.discount == 100:
+            code_text = "Nessun codice rilevato (offerta gratuita)"
+        else:
+            code_text = "Codice non trovato"
+        action_links = tuple(
+            dict.fromkeys((*offer.watchface_links, *offer.coupon_links))
         )
-        direct_links = offer.watchface_links or offer.coupon_links
         plain_parts.extend(
             [
                 f"{offer.title} — {offer.discount}% di sconto",
                 f"Codice: {code_text}",
-                *[f"Watchface: {link}" for link in direct_links],
-                *[
-                    f"Pagina coupon: {link}"
-                    for link in offer.coupon_links
-                    if link not in direct_links
-                ],
+                *[f"Watchface: {link}" for link in offer.watchface_links],
+                *[f"Pagina coupon: {link}" for link in offer.coupon_links],
                 f"Post Reddit: {offer.reddit_url}",
                 "",
             ]
@@ -389,7 +401,7 @@ def build_message(
             f'<li><a href="{html.escape(link, quote=True)}">'
             f"Apri {'la watchface' if link in offer.watchface_links else 'la pagina coupon'}"
             "</a></li>"
-            for link in direct_links
+            for link in action_links
         )
         if not links_html:
             links_html = "<li>Link diretto non trovato: apri il post Reddit.</li>"

@@ -113,7 +113,10 @@ class MessageTests(unittest.TestCase):
         post = {
             "id": "abc123",
             "title": "S4U Assen — 50% OFF",
-            "selftext": "https://play.google.com/store/apps/details?id=s4u.test",
+            "selftext": (
+                "https://play.google.com/store/apps/details?id=s4u.test "
+                "https://watchface-coupon.example/code"
+            ),
             "permalink": "/r/WearOS/comments/abc123/example/",
             "created_utc": datetime(2026, 7, 10, 9, tzinfo=timezone.utc).timestamp(),
         }
@@ -137,6 +140,10 @@ class MessageTests(unittest.TestCase):
             "play.google.com",
             message.get_body(preferencelist=("html",)).get_content(),
         )
+        self.assertIn(
+            "watchface-coupon.example",
+            message.get_body(preferencelist=("html",)).get_content(),
+        )
 
 
 class ConfigurationTests(unittest.TestCase):
@@ -149,6 +156,17 @@ class ConfigurationTests(unittest.TestCase):
             config = Config.from_environment(require_mail=False)
         self.assertEqual(config.reddit_client_id, "client")
         self.assertEqual(config.gmail_username, "")
+        self.assertTrue(config.reddit_user_agent)
+
+    def test_empty_user_agent_secret_uses_default(self):
+        environment = {
+            "REDDIT_CLIENT_ID": "client",
+            "REDDIT_CLIENT_SECRET": "secret",
+            "REDDIT_USER_AGENT": "",
+        }
+        with patch.dict(os.environ, environment, clear=True):
+            config = Config.from_environment(require_mail=False)
+        self.assertIn("s4u-watchface-alert", config.reddit_user_agent)
 
     def test_missing_reddit_credentials_fail(self):
         with patch.dict(os.environ, {}, clear=True):
