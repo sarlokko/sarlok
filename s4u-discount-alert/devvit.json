@@ -1,0 +1,63 @@
+{
+  "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+  "name": "s4u-discount-alert",
+  "server": {},
+  "permissions": {
+    "reddit": {
+      "enable": true,
+      "scope": "user"
+    },
+    "redis": true,
+    "http": {
+      "enable": true,
+      "domains": [
+        "script.google.com",
+        "script.googleusercontent.com"
+      ]
+    }
+  },
+  "scheduler": {
+    "tasks": {
+      "check-s4u-discounts": {
+        "endpoint": "/internal/scheduler/check-s4u-discounts",
+        "cron": "17 * * * *"
+      }
+    }
+  },
+  "settings": {
+    "global": {
+      "gmail_webhook_url": {
+        "type": "string",
+        "label": "Gmail Apps Script webhook URL",
+        "helpText": "The deployed /exec URL for the private Gmail Apps Script webhook.",
+        "isSecret": true
+      },
+      "gmail_webhook_token": {
+        "type": "string",
+        "label": "Gmail webhook token",
+        "helpText": "A long random token shared only with the Gmail Apps Script.",
+        "isSecret": true
+      },
+      "alert_recipient": {
+        "type": "string",
+        "label": "Alert recipient",
+        "helpText": "Email address that receives qualifying S4U discount alerts.",
+        "isSecret": true
+      }
+    }
+  },
+  "menu": {
+    "items": [
+      {
+        "label": "Check S4U discounts now",
+        "description": "Run the read-only S4U discount monitor immediately.",
+        "forUserType": "moderator",
+        "location": "subreddit",
+        "endpoint": "/internal/menu/check-s4u-discounts"
+      }
+    ]
+  },
+  "scripts": {
+    "dev": "npm run watch"
+  }
+}
