@@ -8,6 +8,7 @@
     "build": "npm run build:server -- --metafile=dist/server.meta.json --minify",
     "build:server": "esbuild --bundle --log-level=warning --sourcemap=linked --target=es2023 --format=cjs --outdir=dist/server --platform=node src/server/index.ts",
     "clean": "rm -rf dist/",
+    "dev": "devvit playtest",
     "format": "npm run lint -- --fix",
     "lint": "biome check --error-on-warnings",
     "playtest": "devvit playtest",
