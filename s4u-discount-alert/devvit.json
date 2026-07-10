@@ -19,11 +19,11 @@
   },
   "settings": {
     "global": {
-      "reddit_recipient": {
+      "notification_subreddit": {
         "type": "string",
-        "label": "Reddit alert recipient",
-        "helpText": "Reddit username that receives qualifying S4U discount alerts.",
-        "defaultValue": "sarlokkko"
+        "label": "Notification subreddit",
+        "helpText": "Subreddit whose Modmail receives qualifying S4U discount alerts.",
+        "defaultValue": "s4u_discount_aler_dev"
       }
     }
   },
@@ -38,7 +38,7 @@
       },
       {
         "label": "Send notification test",
-        "description": "Send a test private message to the configured Reddit account.",
+        "description": "Send a test notification to the configured subreddit Modmail.",
         "forUserType": "moderator",
         "location": "subreddit",
         "endpoint": "/internal/menu/send-notification-test"

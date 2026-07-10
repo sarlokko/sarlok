@@ -1,7 +1,7 @@
 import {reddit, settings} from '@devvit/web/server'
 import type {Offer} from './offer.ts'
 
-const RECIPIENT_SETTING = 'reddit_recipient'
+const SUBREDDIT_SETTING = 'notification_subreddit'
 
 export type DeliveryResult =
   | {configured: false; sent: false}
@@ -11,17 +11,18 @@ export async function deliverOffers(
   offers: readonly Offer[],
   subject?: string,
 ): Promise<DeliveryResult> {
-  const recipient = await getRecipient()
-  if (!recipient) return {configured: false, sent: false}
+  const subredditName = await getNotificationSubreddit()
+  if (!subredditName) return {configured: false, sent: false}
 
-  await reddit.sendPrivateMessage({
-    to: recipient,
+  const subreddit = await reddit.getSubredditByName(subredditName)
+  await reddit.modMail.createModNotification({
+    subredditId: subreddit.id,
     subject:
       subject ??
       `S4U: ${offers.length} ${
         offers.length === 1 ? 'offerta trovata' : 'offerte trovate'
       }`,
-    text: buildMessageBody(offers),
+    bodyMarkdown: buildMessageBody(offers),
   })
   return {configured: true, sent: true}
 }
@@ -66,10 +67,10 @@ export function buildMessageBody(offers: readonly Offer[]): string {
   return lines.join('\n')
 }
 
-async function getRecipient(): Promise<string | undefined> {
-  const value = (await settings.get<string>(RECIPIENT_SETTING))?.trim()
+async function getNotificationSubreddit(): Promise<string | undefined> {
+  const value = (await settings.get<string>(SUBREDDIT_SETTING))?.trim()
   if (!value) return undefined
-  return value.replace(/^u\//iu, '')
+  return value.replace(/^r\//iu, '')
 }
 
 function codeDescription(offer: Offer): string {

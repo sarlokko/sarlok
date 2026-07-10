@@ -1,7 +1,7 @@
 # S4U Discount Alert
 
-Private, non-commercial Devvit app that reads Reddit directly and sends private
-Reddit alerts for S4U watch-face discounts between 50% and 100%.
+Private, non-commercial Devvit app that reads Reddit directly and sends Modmail
+alerts for S4U watch-face discounts between 50% and 100%.
 
 ## Reddit sources
 
@@ -15,8 +15,8 @@ The app checks:
 - `r/GalaxyWatch`.
 
 It reads only public posts and comments through Reddit's official Devvit API.
-It never posts, comments, votes, or moderates. Its only write action is sending
-qualifying offer alerts to the configured Reddit account.
+It never posts, comments, votes, or changes moderation state. Its only write
+action is creating notifications in the configured community's Modmail.
 
 ## Schedule and filtering
 
@@ -33,26 +33,26 @@ An offer qualifies only when:
 1. its title, body, or comments identify S4U/styles4you; and
 2. an explicit discount from 50% through 100%, or a free offer, is detected.
 
-The private message contains the detected percentage, copyable coupon code,
-direct store link, coupon-page link, and original Reddit post link whenever
-available.
+The Modmail notification contains the detected percentage, copyable coupon
+code, direct store link, coupon-page link, and original Reddit post link
+whenever available.
 
 ## Notifications
 
 Reddit rejected the Google Apps Script domains required by the original Gmail
-webhook design. The app therefore sends a private Reddit message without using
-an external service. Reddit can forward private-message notifications to the
-email address registered on the recipient's Reddit account.
+webhook design. Reddit's legacy private-message API also accepts requests
+without delivering them. The app therefore creates a supported Modmail
+notification without using an external service.
 
-The default recipient is `u/sarlokkko`. It can be changed in the Devvit global
-settings or with:
+The default destination is `r/s4u_discount_aler_dev`. It can be changed in the
+Devvit global settings or with:
 
 ```bash
-npx devvit settings set reddit_recipient
+npx devvit settings set notification_subreddit
 ```
 
-To receive the same alert at the account's email address, enable Reddit email
-notifications for private messages in **Settings → Emails**.
+Moderators can enable Modmail notifications for that community in Reddit's
+notification settings.
 
 ## Development
 

@@ -61,11 +61,11 @@ async function routeMenuCheck(): Promise<UiResponse> {
   if (result.newOffers === 0) {
     text = `Controllo completato: nessuna nuova offerta (${result.candidates} post esaminati).`
   } else if (!result.configured) {
-    text = `${result.newOffers} offerte trovate; configura il destinatario Reddit.`
+    text = `${result.newOffers} offerte trovate; configura il subreddit di notifica.`
   } else if (result.sent) {
-    text = `Messaggio inviato con ${result.newOffers} nuove offerte S4U.`
+    text = `Notifica Modmail inviata con ${result.newOffers} nuove offerte S4U.`
   } else {
-    text = `${result.newOffers} offerte trovate, ma nessun messaggio inviato.`
+    text = `${result.newOffers} offerte trovate, ma nessuna notifica inviata.`
   }
   return {
     showToast: {text, appearance: 'success'},
@@ -77,8 +77,8 @@ async function routeMenuNotificationTest(): Promise<UiResponse> {
   return {
     showToast: {
       text: delivery.sent
-        ? 'Messaggio Reddit di prova inviato.'
-        : 'Configura il destinatario Reddit prima del test.',
+        ? 'Notifica Modmail di prova inviata.'
+        : 'Configura il subreddit di notifica prima del test.',
       appearance: delivery.sent ? 'success' : 'neutral',
     },
   }

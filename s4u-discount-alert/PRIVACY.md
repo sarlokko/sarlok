@@ -14,16 +14,16 @@ qualifying offers.
 
 ## Data use and retention
 
-Qualifying offer details are sent in a private message to the configured Reddit
-account. Reddit post IDs that have been notified are retained in Devvit Redis
+Qualifying offer details are sent to the configured community's private
+Modmail. Reddit post IDs that have been notified are retained in Devvit Redis
 for 45 days solely to prevent duplicate notifications. No user profiles or
-private Reddit data are collected, and Reddit data is not sold, shared, used for
-advertising, or used to train artificial intelligence models.
+private Reddit data are collected, and Reddit data is not sold, shared, used
+for advertising, or used to train artificial intelligence models.
 
 ## Third-party services
 
 The application uses Reddit Devvit for execution, data access, storage, and
-private-message delivery. Reddit's privacy policy applies to those services.
+Modmail delivery. Reddit's privacy policy applies to those services.
 
 ## Contact
 
