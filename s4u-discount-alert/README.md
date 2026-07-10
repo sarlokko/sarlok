@@ -1,7 +1,7 @@
 # S4U Discount Alert
 
 Private, non-commercial Devvit app that reads Reddit directly and sends Modmail
-alerts for S4U watch-face discounts between 50% and 100%.
+and email alerts for S4U watch-face discounts between 50% and 100%.
 
 ## Reddit sources
 
@@ -37,7 +37,7 @@ The Modmail notification contains the detected percentage, copyable coupon
 code, direct store link, coupon-page link, and original Reddit post link
 whenever available.
 
-## Notifications
+## Modmail notifications
 
 Reddit rejected the Google Apps Script domains required by the original Gmail
 webhook design. Reddit's legacy private-message API also accepts requests
@@ -54,6 +54,21 @@ npx devvit settings set notification_subreddit
 Moderators can enable Modmail notifications for that community in Reddit's
 notification settings.
 
+## Email notifications
+
+Direct email uses the Resend API because Reddit rejected Google Apps Script's
+shared webhook domains. Create a Resend account using the destination email,
+then configure:
+
+```bash
+npx devvit settings set resend_api_key
+npx devvit settings set email_recipient
+```
+
+The default Resend sender, `onboarding@resend.dev`, can send test and alert
+emails to the address associated with the Resend account. Reddit must approve
+HTTP access to the exact `api.resend.com` hostname before delivery works.
+
 ## Development
 
 ```bash
@@ -63,5 +78,6 @@ npm run dev
 
 The playtest installs the app into its automatically created development
 community. Use the moderator menu item **Check S4U discounts now** for a manual
-run. Use **Send notification test** to verify private-message delivery without
-waiting for a qualifying offer.
+run. Use **Send notification test** to verify Modmail delivery without
+waiting for a qualifying offer. Use **Send email test** to verify direct email
+delivery after configuring Resend.

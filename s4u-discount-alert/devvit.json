@@ -7,7 +7,11 @@
       "enable": true,
       "scope": "user"
     },
-    "redis": true
+    "redis": true,
+    "http": {
+      "enable": true,
+      "domains": ["api.resend.com"]
+    }
   },
   "scheduler": {
     "tasks": {
@@ -24,6 +28,18 @@
         "label": "Notification subreddit",
         "helpText": "Subreddit whose Modmail receives qualifying S4U discount alerts.",
         "defaultValue": "s4u_discount_aler_dev"
+      },
+      "resend_api_key": {
+        "type": "string",
+        "label": "Resend API key",
+        "helpText": "Secret API key used to send direct email alerts.",
+        "isSecret": true
+      },
+      "email_recipient": {
+        "type": "string",
+        "label": "Email recipient",
+        "helpText": "Email address that receives qualifying S4U discount alerts.",
+        "defaultValue": "mvmc85@gmail.com"
       }
     }
   },
@@ -42,6 +58,13 @@
         "forUserType": "moderator",
         "location": "subreddit",
         "endpoint": "/internal/menu/send-notification-test"
+      },
+      {
+        "label": "Send email test",
+        "description": "Send a test email through the configured Resend account.",
+        "forUserType": "moderator",
+        "location": "subreddit",
+        "endpoint": "/internal/menu/send-email-test"
       }
     ]
   },

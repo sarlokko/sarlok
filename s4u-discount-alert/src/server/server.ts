@@ -2,6 +2,7 @@ import type {IncomingMessage, ServerResponse} from 'node:http'
 import type {TaskResponse} from '@devvit/web/server'
 import type {PartialJsonValue, UiResponse} from '@devvit/web/shared'
 import {Endpoint, EndpointMethod, type ErrorRsp} from '../shared/api.ts'
+import {deliverTestEmail} from './email.ts'
 import {runMonitor} from './monitor.ts'
 import {deliverTestNotification} from './notification.ts'
 import {shouldRunScheduled} from './offer.ts'
@@ -38,6 +39,9 @@ async function route(
     switch (endpoint) {
       case Endpoint.OnMenuCheck:
         rsp = await routeMenuCheck()
+        break
+      case Endpoint.OnMenuEmailTest:
+        rsp = await routeMenuEmailTest()
         break
       case Endpoint.OnMenuNotificationTest:
         rsp = await routeMenuNotificationTest()
@@ -79,6 +83,18 @@ async function routeMenuNotificationTest(): Promise<UiResponse> {
       text: delivery.sent
         ? 'Notifica Modmail di prova inviata.'
         : 'Configura il subreddit di notifica prima del test.',
+      appearance: delivery.sent ? 'success' : 'neutral',
+    },
+  }
+}
+
+async function routeMenuEmailTest(): Promise<UiResponse> {
+  const delivery = await deliverTestEmail()
+  return {
+    showToast: {
+      text: delivery.sent
+        ? 'Email di prova inviata.'
+        : 'Configura chiave Resend e destinatario prima del test.',
       appearance: delivery.sent ? 'success' : 'neutral',
     },
   }

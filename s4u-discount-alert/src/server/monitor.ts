@@ -1,5 +1,6 @@
 import type {Post} from '@devvit/web/server'
 import {reddit, redis} from '@devvit/web/server'
+import {deliverEmailOffers} from './email.ts'
 import {deliverOffers} from './notification.ts'
 import {
   buildOffer,
@@ -57,6 +58,7 @@ export async function runMonitor(now = new Date()): Promise<MonitorResult> {
       .map(offer => offer.redditUrl)
       .join(', ')}`,
   )
+  await deliverEmailOffers(newOffers)
   const delivery = await deliverOffers(newOffers)
   if (delivery.sent) await markSeen(newOffers)
 
