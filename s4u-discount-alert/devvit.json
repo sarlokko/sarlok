@@ -56,5 +56,8 @@
   },
   "scripts": {
     "dev": "npm run watch"
+  },
+  "dev": {
+    "subreddit": "s4u_discount_aler_dev"
   }
 }
