@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import {test} from 'node:test'
-import {buildEmailBody} from './email.ts'
+import {buildMessageBody} from './notification.ts'
 import {
   buildOffer,
   classifyLinks,
@@ -91,7 +91,7 @@ test('uses Europe/Rome schedule in summer and winter', () => {
   assert.equal(shouldRunScheduled(new Date('2026-01-10T07:17:00Z')), true)
 })
 
-test('renders copyable codes and escaped links in email', () => {
+test('renders copyable codes and direct links in a Reddit message', () => {
   const offer: Offer = {
     redditId: 't3_abc123',
     title: 'S4U <Assen>',
@@ -106,10 +106,10 @@ test('renders copyable codes and escaped links in email', () => {
     code: 'CODE123456',
     createdAt: '2026-07-10T09:00:00.000Z',
   }
-  const message = buildEmailBody([offer])
-  assert.match(message.text, /CODE123456/u)
-  assert.match(message.html, /S4U &lt;Assen&gt;/u)
-  assert.match(message.html, /play\.google\.com/u)
-  assert.match(message.html, /watchface-coupon\.example/u)
-  assert.match(message.html, /&amp;hl=it/u)
+  const message = buildMessageBody([offer])
+  assert.match(message, /CODE123456/u)
+  assert.match(message, /S4U <Assen>/u)
+  assert.match(message, /play\.google\.com/u)
+  assert.match(message, /watchface-coupon\.example/u)
+  assert.match(message, /&hl=it/u)
 })
