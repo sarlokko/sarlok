@@ -10,10 +10,7 @@
     "redis": true,
     "http": {
       "enable": true,
-      "domains": [
-        "script.google.com",
-        "script.googleusercontent.com"
-      ]
+      "domains": ["script.google.com", "script.googleusercontent.com"]
     }
   },
   "scheduler": {

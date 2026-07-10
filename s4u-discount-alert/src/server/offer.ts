@@ -49,6 +49,13 @@ export type Offer = {
   createdAt: string
 }
 
+export function isS4uCandidate(post: PostSnapshot): boolean {
+  return (
+    post.authorName.toLowerCase() === TARGET_AUTHOR ||
+    BRAND_PATTERN.test(`${post.title}\n${post.body ?? ''}`)
+  )
+}
+
 export function detectDiscount(text: string): number | undefined {
   const percentages: number[] = []
   for (const match of text.matchAll(DISCOUNT_PATTERN)) {
@@ -65,11 +72,7 @@ export function extractCode(text: string): string | undefined {
 
   for (const match of text.matchAll(GENERIC_CODE_PATTERN)) {
     const candidate = match[1]
-    if (
-      candidate &&
-      /[A-Z]/u.test(candidate) &&
-      /\d/u.test(candidate)
-    ) {
+    if (candidate && /[A-Z]/u.test(candidate) && /\d/u.test(candidate)) {
       return candidate
     }
   }

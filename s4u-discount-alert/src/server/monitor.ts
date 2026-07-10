@@ -1,8 +1,9 @@
-import {reddit, redis} from '@devvit/web/server'
 import type {Post} from '@devvit/web/server'
+import {reddit, redis} from '@devvit/web/server'
 import {deliverOffers} from './email.ts'
 import {
   buildOffer,
+  isS4uCandidate,
   type Offer,
   type PostSnapshot,
   TARGET_AUTHOR,
@@ -29,8 +30,10 @@ export async function runMonitor(now = new Date()): Promise<MonitorResult> {
 
   const qualifying: Offer[] = []
   for (const post of recentPosts) {
+    const snapshot = toSnapshot(post)
+    if (!isS4uCandidate(snapshot)) continue
     const comments = await fetchCommentBodies(post)
-    const offer = buildOffer(toSnapshot(post), comments)
+    const offer = buildOffer(snapshot, comments)
     if (offer) qualifying.push(offer)
   }
 
@@ -85,10 +88,13 @@ async function collectCandidatePosts(): Promise<Map<string, Post>> {
   )
 
   for (const subredditName of TARGET_SUBREDDITS) {
-    await addPosts(posts, `r/${subredditName}`, async () =>
-      await reddit
-        .getNewPosts({subredditName, limit: 100, pageSize: 100})
-        .all(),
+    await addPosts(
+      posts,
+      `r/${subredditName}`,
+      async () =>
+        await reddit
+          .getNewPosts({subredditName, limit: 100, pageSize: 100})
+          .all(),
     )
   }
   return posts

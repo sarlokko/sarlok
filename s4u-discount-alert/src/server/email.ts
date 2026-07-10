@@ -39,13 +39,13 @@ export async function deliverOffers(
   })
   if (!response.ok) {
     const detail = (await response.text()).slice(0, 300)
-    throw new Error(
-      `Gmail webhook returned HTTP ${response.status}: ${detail}`,
-    )
+    throw new Error(`Gmail webhook returned HTTP ${response.status}: ${detail}`)
   }
   const detail = (await response.json()) as {ok?: boolean; error?: string}
   if (detail.ok !== true) {
-    throw new Error(`Gmail webhook rejected the alert: ${detail.error ?? 'unknown error'}`)
+    throw new Error(
+      `Gmail webhook rejected the alert: ${detail.error ?? 'unknown error'}`,
+    )
   }
   return {configured: true, sent: true}
 }

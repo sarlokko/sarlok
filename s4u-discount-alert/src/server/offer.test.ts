@@ -7,10 +7,26 @@ import {
   detectDiscount,
   extractCode,
   extractUrls,
+  isS4uCandidate,
   type Offer,
   type PostSnapshot,
   shouldRunScheduled,
 } from './offer.ts'
+
+test('prefilters S4U posts and the official developer account', () => {
+  const base: PostSnapshot = {
+    id: 't3_abc123',
+    authorName: 'someone',
+    subredditName: 'GalaxyWatchFace',
+    permalink: '/r/GalaxyWatchFace/comments/abc123/example/',
+    title: 'A generic watch face',
+    url: 'https://www.reddit.com/r/GalaxyWatchFace/comments/abc123/',
+    createdAt: new Date('2026-07-10T09:00:00Z'),
+  }
+  assert.equal(isS4uCandidate(base), false)
+  assert.equal(isS4uCandidate({...base, title: 'S4U weekend deal'}), true)
+  assert.equal(isS4uCandidate({...base, authorName: 'matze_styles4you'}), true)
+})
 
 test('detects only qualifying discount language', () => {
   assert.equal(detectDiscount('S4U watch face is 50% OFF'), 50)
@@ -31,9 +47,7 @@ test('extracts and classifies direct links', () => {
       'then visit https://watchface-coupon.example/code.',
   )
   assert.deepEqual(classifyLinks(urls), {
-    watchfaceLinks: [
-      'https://play.google.com/store/apps/details?id=s4u.test',
-    ],
+    watchfaceLinks: ['https://play.google.com/store/apps/details?id=s4u.test'],
     couponLinks: ['https://watchface-coupon.example/code'],
   })
 })
