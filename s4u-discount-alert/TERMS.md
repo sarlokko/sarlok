@@ -12,9 +12,9 @@ expire, be limited by country, or appear only in images that the application
 does not process.
 
 Use of the application must comply with Reddit's terms, policies, and Devvit
-requirements, as well as Google's terms for Apps Script and Gmail. The
-application may not be used for scraping, profiling, advertising, resale,
-artificial-intelligence training, or commercial data collection.
+requirements. The application may not be used for scraping, profiling,
+advertising, resale, artificial-intelligence training, or commercial data
+collection.
 
 The application may be disabled at any time if a platform changes its
 interfaces or policies.

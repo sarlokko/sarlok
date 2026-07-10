@@ -14,21 +14,16 @@ qualifying offers.
 
 ## Data use and retention
 
-Qualifying offer details are sent to the owner's private Gmail address. Reddit
-post IDs that have been emailed are retained in Devvit Redis for 45 days solely
-to prevent duplicate notifications. No user profiles or private Reddit data are
-collected, and Reddit data is not sold, shared, used for advertising, or used
-to train artificial intelligence models.
-
-The Gmail webhook stores a stable notification ID to prevent duplicate email
-delivery. The owner may delete these entries or the Apps Script project at any
-time.
+Qualifying offer details are sent in a private message to the configured Reddit
+account. Reddit post IDs that have been notified are retained in Devvit Redis
+for 45 days solely to prevent duplicate notifications. No user profiles or
+private Reddit data are collected, and Reddit data is not sold, shared, used for
+advertising, or used to train artificial intelligence models.
 
 ## Third-party services
 
-The application uses Reddit Devvit for execution and data access, and Google
-Apps Script/Gmail for private email delivery. Their respective privacy policies
-apply to those services.
+The application uses Reddit Devvit for execution, data access, storage, and
+private-message delivery. Reddit's privacy policy applies to those services.
 
 ## Contact
 

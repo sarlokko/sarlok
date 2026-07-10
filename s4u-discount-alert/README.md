@@ -1,7 +1,7 @@
 # S4U Discount Alert
 
-Private, non-commercial Devvit app that reads Reddit directly and sends Gmail
-alerts for S4U watch-face discounts between 50% and 100%.
+Private, non-commercial Devvit app that reads Reddit directly and sends private
+Reddit alerts for S4U watch-face discounts between 50% and 100%.
 
 ## Reddit sources
 
@@ -15,7 +15,8 @@ The app checks:
 - `r/GalaxyWatch`.
 
 It reads only public posts and comments through Reddit's official Devvit API.
-It never posts, comments, votes, moderates, or sends Reddit messages.
+It never posts, comments, votes, or moderates. Its only write action is sending
+qualifying offer alerts to the configured Reddit account.
 
 ## Schedule and filtering
 
@@ -24,45 +25,34 @@ only at approximately 08:17, 14:17, and 20:17 in `Europe/Rome`, including
 daylight-saving changes.
 
 Each active run checks posts from the previous 24 hours. Redis remembers
-successfully emailed Reddit post IDs for 45 days, preventing duplicate alerts
-while allowing a later run to recover from a temporary Gmail failure.
+successfully notified Reddit post IDs for 45 days, preventing duplicate alerts
+while allowing a later run to recover from a temporary delivery failure.
 
 An offer qualifies only when:
 
 1. its title, body, or comments identify S4U/styles4you; and
 2. an explicit discount from 50% through 100%, or a free offer, is detected.
 
-The email contains the detected percentage, copyable coupon code, direct store
-link, coupon-page link, and original Reddit post link whenever available.
+The private message contains the detected percentage, copyable coupon code,
+direct store link, coupon-page link, and original Reddit post link whenever
+available.
 
-## Gmail connection
+## Notifications
 
-Devvit cannot connect to Gmail SMTP. This app uses a private Google Apps Script
-webhook that calls `GmailApp` from the owner's Google account.
+Reddit rejected the Google Apps Script domains required by the original Gmail
+webhook design. The app therefore sends a private Reddit message without using
+an external service. Reddit can forward private-message notifications to the
+email address registered on the recipient's Reddit account.
 
-1. Create a project at <https://script.google.com/>.
-2. Replace the editor contents with `gmail-apps-script.gs`.
-3. In **Project Settings → Script Properties**, add:
-   - `WEBHOOK_TOKEN`: a random secret with at least 32 characters;
-   - `ALERT_RECIPIENT`: the destination Gmail address.
-4. Select **Deploy → New deployment → Web app**:
-   - execute as **Me**;
-   - access: **Anyone**.
-5. Copy the deployment URL ending in `/exec`.
-6. Configure the Devvit global settings:
+The default recipient is `u/sarlokkko`. It can be changed in the Devvit global
+settings or with:
 
 ```bash
-npx devvit settings set gmail_webhook_url
-npx devvit settings set gmail_webhook_token
-npx devvit settings set alert_recipient
+npx devvit settings set reddit_recipient
 ```
 
-The recipient and token are validated by Apps Script. Stable notification IDs
-also prevent duplicate Gmail deliveries if a webhook response is lost.
-
-HTTP access to `script.google.com` and `script.googleusercontent.com` must be
-approved by Reddit for the Devvit app. Devvit requires links to the included
-privacy policy and terms when HTTP Fetch is enabled.
+To receive the same alert at the account's email address, enable Reddit email
+notifications for private messages in **Settings → Emails**.
 
 ## Development
 
@@ -73,5 +63,5 @@ npm run dev
 
 The playtest installs the app into its automatically created development
 community. Use the moderator menu item **Check S4U discounts now** for a manual
-run. Use **Send Gmail test** to verify the complete Devvit-to-Gmail connection
-without waiting for a qualifying offer.
+run. Use **Send notification test** to verify private-message delivery without
+waiting for a qualifying offer.

@@ -1,6 +1,6 @@
 import type {Post} from '@devvit/web/server'
 import {reddit, redis} from '@devvit/web/server'
-import {deliverOffers} from './email.ts'
+import {deliverOffers} from './notification.ts'
 import {
   buildOffer,
   isS4uCandidate,

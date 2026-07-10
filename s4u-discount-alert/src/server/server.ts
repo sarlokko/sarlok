@@ -2,8 +2,8 @@ import type {IncomingMessage, ServerResponse} from 'node:http'
 import type {TaskResponse} from '@devvit/web/server'
 import type {PartialJsonValue, UiResponse} from '@devvit/web/shared'
 import {Endpoint, EndpointMethod, type ErrorRsp} from '../shared/api.ts'
-import {deliverTestEmail} from './email.ts'
 import {runMonitor} from './monitor.ts'
+import {deliverTestNotification} from './notification.ts'
 import {shouldRunScheduled} from './offer.ts'
 
 type AnyRsp = UiResponse | TaskResponse | ErrorRsp
@@ -39,8 +39,8 @@ async function route(
       case Endpoint.OnMenuCheck:
         rsp = await routeMenuCheck()
         break
-      case Endpoint.OnMenuGmailTest:
-        rsp = await routeMenuGmailTest()
+      case Endpoint.OnMenuNotificationTest:
+        rsp = await routeMenuNotificationTest()
         break
       case Endpoint.OnScheduledCheck:
         rsp = await routeScheduledCheck()
@@ -61,24 +61,24 @@ async function routeMenuCheck(): Promise<UiResponse> {
   if (result.newOffers === 0) {
     text = `Controllo completato: nessuna nuova offerta (${result.candidates} post esaminati).`
   } else if (!result.configured) {
-    text = `${result.newOffers} offerte trovate; configura Gmail per inviarle.`
+    text = `${result.newOffers} offerte trovate; configura il destinatario Reddit.`
   } else if (result.sent) {
-    text = `Email inviata con ${result.newOffers} nuove offerte S4U.`
+    text = `Messaggio inviato con ${result.newOffers} nuove offerte S4U.`
   } else {
-    text = `${result.newOffers} offerte trovate, ma nessuna email inviata.`
+    text = `${result.newOffers} offerte trovate, ma nessun messaggio inviato.`
   }
   return {
     showToast: {text, appearance: 'success'},
   }
 }
 
-async function routeMenuGmailTest(): Promise<UiResponse> {
-  const delivery = await deliverTestEmail()
+async function routeMenuNotificationTest(): Promise<UiResponse> {
+  const delivery = await deliverTestNotification()
   return {
     showToast: {
       text: delivery.sent
-        ? 'Email di prova inviata.'
-        : 'Configura le tre impostazioni Gmail prima del test.',
+        ? 'Messaggio Reddit di prova inviato.'
+        : 'Configura il destinatario Reddit prima del test.',
       appearance: delivery.sent ? 'success' : 'neutral',
     },
   }

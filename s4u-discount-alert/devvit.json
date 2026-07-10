@@ -7,11 +7,7 @@
       "enable": true,
       "scope": "user"
     },
-    "redis": true,
-    "http": {
-      "enable": true,
-      "domains": ["script.google.com", "script.googleusercontent.com"]
-    }
+    "redis": true
   },
   "scheduler": {
     "tasks": {
@@ -23,23 +19,11 @@
   },
   "settings": {
     "global": {
-      "gmail_webhook_url": {
+      "reddit_recipient": {
         "type": "string",
-        "label": "Gmail Apps Script webhook URL",
-        "helpText": "The deployed /exec URL for the private Gmail Apps Script webhook.",
-        "isSecret": true
-      },
-      "gmail_webhook_token": {
-        "type": "string",
-        "label": "Gmail webhook token",
-        "helpText": "A long random token shared only with the Gmail Apps Script.",
-        "isSecret": true
-      },
-      "alert_recipient": {
-        "type": "string",
-        "label": "Alert recipient",
-        "helpText": "Email address that receives qualifying S4U discount alerts.",
-        "isSecret": true
+        "label": "Reddit alert recipient",
+        "helpText": "Reddit username that receives qualifying S4U discount alerts.",
+        "defaultValue": "sarlokkko"
       }
     }
   },
@@ -53,11 +37,11 @@
         "endpoint": "/internal/menu/check-s4u-discounts"
       },
       {
-        "label": "Send Gmail test",
-        "description": "Send a test message through the configured Gmail webhook.",
+        "label": "Send notification test",
+        "description": "Send a test private message to the configured Reddit account.",
         "forUserType": "moderator",
         "location": "subreddit",
-        "endpoint": "/internal/menu/send-gmail-test"
+        "endpoint": "/internal/menu/send-notification-test"
       }
     ]
   },
