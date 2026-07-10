@@ -2,6 +2,7 @@ import type {IncomingMessage, ServerResponse} from 'node:http'
 import type {TaskResponse} from '@devvit/web/server'
 import type {PartialJsonValue, UiResponse} from '@devvit/web/shared'
 import {Endpoint, EndpointMethod, type ErrorRsp} from '../shared/api.ts'
+import {deliverTestEmail} from './email.ts'
 import {runMonitor} from './monitor.ts'
 import {shouldRunScheduled} from './offer.ts'
 
@@ -38,6 +39,9 @@ async function route(
       case Endpoint.OnMenuCheck:
         rsp = await routeMenuCheck()
         break
+      case Endpoint.OnMenuGmailTest:
+        rsp = await routeMenuGmailTest()
+        break
       case Endpoint.OnScheduledCheck:
         rsp = await routeScheduledCheck()
         break
@@ -65,6 +69,18 @@ async function routeMenuCheck(): Promise<UiResponse> {
   }
   return {
     showToast: {text, appearance: 'success'},
+  }
+}
+
+async function routeMenuGmailTest(): Promise<UiResponse> {
+  const delivery = await deliverTestEmail()
+  return {
+    showToast: {
+      text: delivery.sent
+        ? 'Email di prova inviata.'
+        : 'Configura le tre impostazioni Gmail prima del test.',
+      appearance: delivery.sent ? 'success' : 'neutral',
+    },
   }
 }
 

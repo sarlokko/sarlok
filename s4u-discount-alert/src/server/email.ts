@@ -13,6 +13,7 @@ export type DeliveryResult =
 
 export async function deliverOffers(
   offers: readonly Offer[],
+  subject?: string,
 ): Promise<DeliveryResult> {
   const config = await getEmailConfig()
   if (!config) return {configured: false, sent: false}
@@ -29,9 +30,11 @@ export async function deliverOffers(
       token: config.webhookToken,
       notificationId,
       recipient: config.recipient,
-      subject: `S4U: ${offers.length} ${
-        offers.length === 1 ? 'offerta trovata' : 'offerte trovate'
-      }`,
+      subject:
+        subject ??
+        `S4U: ${offers.length} ${
+          offers.length === 1 ? 'offerta trovata' : 'offerte trovate'
+        }`,
       textBody: body.text,
       htmlBody: body.html,
     }),
@@ -48,6 +51,26 @@ export async function deliverOffers(
     )
   }
   return {configured: true, sent: true}
+}
+
+export async function deliverTestEmail(): Promise<DeliveryResult> {
+  const now = new Date()
+  return await deliverOffers(
+    [
+      {
+        redditId: `gmail-test-${now.getTime()}`,
+        title: 'Connessione Gmail configurata correttamente',
+        redditUrl: 'https://www.reddit.com/r/s4u_discount_aler_dev/',
+        subreddit: 's4u_discount_aler_dev',
+        discount: 100,
+        watchfaceLinks: [],
+        couponLinks: [],
+        code: 'TEST-OK',
+        createdAt: now.toISOString(),
+      },
+    ],
+    'S4U Reddit Alert: email di prova',
+  )
 }
 
 async function getEmailConfig(): Promise<EmailConfig | undefined> {

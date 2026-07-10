@@ -73,4 +73,5 @@ npm run dev
 
 The playtest installs the app into its automatically created development
 community. Use the moderator menu item **Check S4U discounts now** for a manual
-run.
+run. Use **Send Gmail test** to verify the complete Devvit-to-Gmail connection
+without waiting for a qualifying offer.

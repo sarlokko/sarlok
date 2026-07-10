@@ -51,6 +51,13 @@
         "forUserType": "moderator",
         "location": "subreddit",
         "endpoint": "/internal/menu/check-s4u-discounts"
+      },
+      {
+        "label": "Send Gmail test",
+        "description": "Send a test message through the configured Gmail webhook.",
+        "forUserType": "moderator",
+        "location": "subreddit",
+        "endpoint": "/internal/menu/send-gmail-test"
       }
     ]
   },
