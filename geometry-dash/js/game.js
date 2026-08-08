@@ -296,7 +296,7 @@ export class Game {
 
       if (o.type === "block") {
         if (!aabb(box, o)) continue;
-        const fromTop = this._prevWorldY + p.h <= o.y + 8 && p.vy >= 0;
+        const fromTop = this._prevWorldY + p.h <= o.y + 14 && p.vy >= -40;
         if (fromTop) {
           p.y = o.y - p.h;
           p.vy = 0;

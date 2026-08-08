@@ -16,23 +16,21 @@ export function createLevel() {
 
   const add = (obj) => objects.push(obj);
 
-  // Soft intro runway
+  // Soft intro runway — learn the jump timing
   add({ type: "deco", x: 100, y: G - 180, w: 40, h: 40 });
+  addSpike(objects, 980);
+  addSpike(objects, 1280);
 
-  // Spike intro
-  addSpike(objects, 900);
-  addSpike(objects, 1100);
-
-  // First jump gap onto platform
-  addBlock(objects, 1400, G - S, S * 2, S);
-  addSpike(objects, 1400 + S * 2 + 40);
-  addBlock(objects, 1680, G - S, S * 3, S);
+  // First elevated platform
+  addBlock(objects, 1600, G - S, S * 3, S);
+  addSpike(objects, 1600 + S * 3 + 50);
+  addBlock(objects, 1920, G - S, S * 3, S);
 
   // Staircase
-  for (let i = 0; i < 4; i++) {
-    addBlock(objects, 2100 + i * S, G - S * (i + 1), S, S * (i + 1));
+  for (let i = 0; i < 3; i++) {
+    addBlock(objects, 2300 + i * S, G - S * (i + 1), S, S * (i + 1));
   }
-  addSpike(objects, 2100 + 4 * S + 20);
+  addSpike(objects, 2300 + 3 * S + 40);
 
   // Drop + pad bounce
   add({ type: "pad", x: 2550, y: G - 12, w: S, h: 12 });
