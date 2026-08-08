@@ -1,0 +1,17 @@
+{
+  "name": "MediaFlow Proxy",
+  "install": "pip install --user -r requirements.txt",
+  "terminals": [
+    {
+      "name": "mediaflow-proxy",
+      "command": "python3 -m uvicorn mediaflow_proxy.main:app --host 0.0.0.0 --port 8888",
+      "description": "MediaFlow Proxy FastAPI server. UI at http://localhost:8888/, API docs at /docs, health at /health. Set API_PASSWORD to require auth on /proxy, /extractor, and /speedtest endpoints."
+    }
+  ],
+  "ports": [
+    {
+      "name": "MediaFlow Proxy",
+      "port": 8888
+    }
+  ]
+}
