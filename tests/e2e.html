@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>AF e2e</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <pre id="e2e-out">running…</pre>
+  <div id="app"></div>
+  <script src="../js/content.js"></script>
+  <script src="../js/rng.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/generator.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    (async function () {
+      const out = document.getElementById("e2e-out");
+      function click(act, id) {
+        const sel = id ? `[data-act="${act}"][data-id="${id}"]` : `[data-act="${act}"]`;
+        const btn = document.querySelector(sel);
+        if (!btn) throw new Error("manca " + sel + " html=" + document.getElementById("app").innerText.slice(0, 180));
+        btn.click();
+      }
+      function sleep(ms) {
+        return new Promise((r) => setTimeout(r, ms));
+      }
+      try {
+        AF_STORAGE.setActive(null);
+        AF_STORAGE.resetUsed();
+        AF_APP.startNew("Nonna", ["Luca", "Mia"]);
+        if (!document.querySelector("[data-act='intro-next']")) throw new Error("no intro");
+        if (!document.body.innerText.includes("Luca")) throw new Error("manca giocatore");
+        click("intro-next");
+        click("to-players");
+        const choice = document.querySelector("[data-act='pick']");
+        if (!choice) throw new Error("no choice");
+        choice.click();
+      click("to-roll");
+      click("do-roll");
+      let found = false;
+      for (let i = 0; i < 25; i++) {
+        await sleep(200);
+        if (document.querySelector("[data-act='roll-next']")) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        const acts = [...document.querySelectorAll("[data-act]")].map((b) => b.getAttribute("data-act")).join(",");
+        throw new Error(
+          "dado non ha finito acts=" +
+            acts +
+            " view=" +
+            AF_APP.state.view +
+            " role=" +
+            AF_APP.state.role +
+            " phase=" +
+            (AF_STORAGE.getActive() && AF_STORAGE.getActive().phase) +
+            " rolling=" +
+            AF_APP.state.rolling +
+            " last=" +
+            JSON.stringify(AF_APP.state.lastRoll)
+        );
+      }
+        click("roll-next");
+        if (document.querySelector("[data-act='do-roll']")) {
+          click("do-roll");
+          await sleep(1200);
+          click("roll-next");
+        }
+        if (!document.querySelector("[data-act='to-master']") && !document.body.innerText.includes("Avventura fallita")) {
+          throw new Error("niente esito");
+        }
+        out.textContent = "E2E_OK " + (AF_STORAGE.getActive().title || "");
+      } catch (err) {
+        out.textContent = "E2E_FAIL " + err.message;
+      }
+    })();
+  </script>
+</body>
+</html>
